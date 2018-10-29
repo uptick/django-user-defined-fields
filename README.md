@@ -24,4 +24,4 @@ import userdefinedfields
 ```
 
 ## Tests
-Run tests with `python example/manage.py test testapp`
+Run tests in example directory with `python manage.py test testapp`

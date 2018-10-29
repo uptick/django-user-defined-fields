@@ -1,2 +1,6 @@
 .DS_Store*
 *.pyc
+.vscode/
+build/
+dist/
+django_user_defined_fields.egg-info

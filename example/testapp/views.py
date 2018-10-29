@@ -1,9 +1,6 @@
-from django.urls import reverse
-from django.views.generic.edit import TemplateView
+from django.views.generic.base import TemplateView
 
-import userdefinedfields
-
-from .models import Citation
+import userdefinedfields # noqa
 
 
 class TestDashboardView(TemplateView):

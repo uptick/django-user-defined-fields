@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from models import DisplayCondition, ExtraField
+from userdefinedfields.models import DisplayCondition, ExtraField
 
 
 def get_extra_fields():

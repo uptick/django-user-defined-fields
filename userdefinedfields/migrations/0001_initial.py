@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('label', models.CharField(max_length=50, verbose_name='Display name')),
                 ('name', models.SlugField()),
                 ('field_settings', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default={})),
-                ('widget', models.CharField(choices=[('text', 'Text'), ('multiline-text', 'Multiline Text'), ('integer', 'Number'), ('choice', 'Choice'), ('date', 'Date')], default='text', max_length=32)),
+                ('widget', models.CharField(choices=[('text', 'Text'), ('multiline-text', 'Multiline Text'), ('integer', 'Integer'), ('choice', 'Choice'), ('date', 'Date')], default='text', max_length=32)),
                 ('default', models.CharField(blank=True, default='', max_length=1024)),
                 ('in_list', models.BooleanField(default=True, verbose_name='Show in list view?')),
                 ('required', models.BooleanField(default=False, verbose_name='Should field be required?')),
@@ -60,5 +60,10 @@ class Migration(migrations.Migration):
     operations = [
         migrations.SeparateDatabaseAndState(
             state_operations=state_operations,
+        ),
+        migrations.AlterField(
+            model_name='extrafield',
+            name='widget',
+            
         ),
     ]

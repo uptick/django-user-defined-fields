@@ -1,12 +1,15 @@
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.forms.widgets import Textarea
+
+DEFAULT_INPUT_CLASSNAME = ''
 
 
 class ExtraFieldsInput(Textarea):
     def __init__(self, attrs=None, model=None, *args, **kwargs):
         attrs = attrs or {}
         attrs.update({
-            'class': 'react-extra-fields-renderer hidden-xs-up',
+            'class': getattr(settings, 'CUSTOM_FIELDS_INPUT_CLASSES', DEFAULT_INPUT_CLASSNAME),
         })
         self.model = model
         super().__init__(attrs, *args, **kwargs)

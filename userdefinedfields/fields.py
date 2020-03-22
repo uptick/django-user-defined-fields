@@ -12,7 +12,7 @@ class ExtraFieldsJSONField(JSONField):
         kwargs['blank'] = True
         super().__init__(*args, **kwargs)
 
-    def _get_FIELD_fieldlist(self, obj, field):
+    def _get_EXTRAFIELD_fieldlist(self, obj, field):
         ct = ContentType.objects.get_for_model(obj)
 
         # grab the relevant extrafields for this content type
@@ -38,11 +38,26 @@ class ExtraFieldsJSONField(JSONField):
         data = getattr(obj, field.attname)
         fieldlist = []
         for f in filtered_fields:
-            fieldlist.append((f.group, f.name, f.label, data.get(f.name, None)))
+            val = data.get(f.name, None)
+
+            # overwrite val with the pretty value if it's a choice field
+            if 'choices' in f.field_settings:
+                choices = dict([(choice.get('value'), choice.get('label')) for choice in f.field_settings['choices']])
+                val = choices.get(val) or val
+            fieldlist.append((f.group, f.name, f.label, val))
+
         return fieldlist
 
+    def _get_EXTRAFIELD_display(self, obj, field):
+        """ Return a dictionary of extrafields relevant to this instance.
+
+        This lets you do something like this in a template:
+        {{ asset.get_extra_fields_display.field_name }}
+        """
+        fieldlist = self._get_EXTRAFIELD_fieldlist(obj, field)
+        return dict([(d[1], d[3]) for d in fieldlist])
+
     def contribute_to_class(self, cls, name, **kwargs):
-        # @todo change this to get_extra_fields_fieldlist
-        setattr(cls, 'get_%s_display' % name, partialmethod(self._get_FIELD_fieldlist, field=self))
-        # @todo add a get_FOO_display for each extra field which would eliminate the "display_value" templatetag filter
+        setattr(cls, 'get_%s_display' % name, partialmethod(self._get_EXTRAFIELD_display, field=self))  # @todo remove - this is deprecated
+        setattr(cls, 'get_%s_fieldlist' % name, partialmethod(self._get_EXTRAFIELD_fieldlist, field=self))
         super().contribute_to_class(cls, name)

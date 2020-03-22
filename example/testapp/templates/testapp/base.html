@@ -9,9 +9,36 @@
 
 <body>
   <div class="container">
-  <h2>Django User Defined Fields</h2>
+    <h2>Django User Defined Fields</h2>
 
-  {% block content %}{% endblock %}
+    <p>Welcome.</p>
+
+    <ol>
+      <li>Run migrations</li>
+      <li>Create some extra fields in <a href="/admin/">admin</a></li>
+      <li>Create a book in admin</li>
+      <li>See it here</li>
+    </ol>
+
+    <h4>Books</h4>
+    <ul>
+      {% for book in books %}
+        <li>{{ book }}
+          <ul>
+            {% for fieldgroup, field_name, label, value in book.get_metadata_fieldlist %}
+              <li>{{ label }}: {{ value }}</li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <h4>Custom fields</h4>
+    <ul>
+      {% for field in extrafields %}
+        <li>{{ field }}</li>
+      {% endfor %}
+    </ul>
   </div>
 </body>
 </html>

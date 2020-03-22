@@ -22,7 +22,7 @@ class ExtraFieldsField(JSONField):
     #     attrs = super().widget_attrs(widget)
     #     ct = ContentType.objects.get_for_model(self.model)
     #     attrs.update({
-    #         'class': 'react-extra-fields-renderer hidden-xs-up',
+    #         'class': settings.USERDEFINEDFIELDS_INPUT_CLASSES,
     #         'data-content-type-id': ct.pk,
     #     })
     #     return attrs

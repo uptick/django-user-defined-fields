@@ -15,7 +15,7 @@ class ExtraField(models.Model):
     order = models.IntegerField(default=0)
     label = models.CharField('Display name', max_length=50)
     name = models.SlugField()
-    field_settings = JSONField(default={}, blank=True)
+    field_settings = JSONField(default=dict, blank=True)
     widget = models.CharField(max_length=32, default='text', choices=WIDGET_CHOICES)
     default = models.CharField(max_length=1024, blank=True, default='')
     in_list = models.BooleanField('Show in list view?', default=True)
@@ -29,7 +29,7 @@ class ExtraField(models.Model):
         unique_together = (
             ('content_type', 'name',),
         )
-        ordering = ('content_type', 'group', 'order',)
+        ordering = ('content_type', 'group', 'order')
 
 
 class DisplayCondition(models.Model):

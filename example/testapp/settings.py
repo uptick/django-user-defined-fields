@@ -4,12 +4,14 @@ SECRET_KEY = 'cheese'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DATABASE_ENGINE = 'sqlite3'
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'testdb.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'userdefinedfields',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -31,6 +33,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
 
+    'userdefinedfields',
     'testapp',
 )
 

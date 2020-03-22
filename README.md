@@ -18,10 +18,19 @@ pip install django-user-defined-fields
 ## Quickstart
 
 ```python
-import userdefinedfields
+from userdefinedfields.models import ExtraFieldsJSONField
 
-# TODO
+
+class Example(models.Model):
+  extra_fields = ExtraFieldsJSONField()
+
 ```
 
 ## Tests
 Run tests in example directory with `python manage.py test testapp`
+
+
+# Settings
+```
+USERDEFINEDFIELDS_INPUT_CLASSES = 'd-none'  # hide the textarea if you're using a frontend solution
+```

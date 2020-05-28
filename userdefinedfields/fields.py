@@ -58,6 +58,6 @@ class ExtraFieldsJSONField(JSONField):
         return dict([(d[1], d[3]) for d in fieldlist])
 
     def contribute_to_class(self, cls, name, **kwargs):
-        setattr(cls, 'get_%s_display' % name, partialmethod(self._get_EXTRAFIELD_display, field=self))  # @todo remove - this is deprecated
+        setattr(cls, 'get_%s_display' % name, partialmethod(self._get_EXTRAFIELD_display, field=self))
         setattr(cls, 'get_%s_fieldlist' % name, partialmethod(self._get_EXTRAFIELD_fieldlist, field=self))
         super().contribute_to_class(cls, name)

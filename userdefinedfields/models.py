@@ -19,7 +19,7 @@ class ExtraField(models.Model):
     widget = models.CharField(max_length=32, default='text', choices=WIDGET_CHOICES)
     default = models.CharField(max_length=1024, blank=True, default='')
     in_list = models.BooleanField('Show in list view?', default=True)
-    required = models.BooleanField('Should field be required?', default=False)
+    is_required = models.BooleanField('Should field be required?', default=False)
     help_text = models.CharField(max_length=300, blank=True)
 
     def __str__(self):

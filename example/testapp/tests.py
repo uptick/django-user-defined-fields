@@ -1,6 +1,6 @@
 import datetime
 
-from testapp.models import Author, Book, Citation, Company
+from testapp.models import Book
 
 from django.test import TestCase
 

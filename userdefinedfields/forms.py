@@ -1,4 +1,4 @@
-from django.contrib.postgres.forms import JSONField
+from django.forms import JSONField
 
 from .widgets import ExtraFieldsInput
 

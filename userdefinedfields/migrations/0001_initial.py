@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('required', models.BooleanField(default=False, verbose_name='Should field be required?')),
                 ('help_text', models.CharField(blank=True, max_length=300)),
                 ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='contenttypes.ContentType')),
-                ('field_settings', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=dict)),
+                ('field_settings', models.jsonb.JSONField(blank=True, default=dict)),
             ],
             options={
                 'ordering': ('content_type', 'group', 'order'),

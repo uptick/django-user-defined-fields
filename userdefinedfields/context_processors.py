@@ -20,6 +20,7 @@ def get_extra_fields():
             'settings': field.field_settings,
             'conditions': conditions[field.id],
             'help_text': field.help_text,
+            'is_required': field.is_required,
         })
 
     return extra_fields

@@ -34,7 +34,7 @@ class ExtraField(models.Model):
 class DisplayCondition(models.Model):
     field = models.ForeignKey(ExtraField, on_delete=models.CASCADE)
     key = models.CharField(max_length=32, blank=True)
-    values = models.CharField(max_length=200, blank=True)
+    values = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
         return f'{self.field} {self.key} {self.values}'

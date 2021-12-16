@@ -26,8 +26,19 @@ class ExtraFieldsJSONField(JSONField):
         filtered_fields = []
         for f in relevant_fields:
             for dc in f.displaycondition_set.all():
+                # Split the dc.key on '__' to create path to relevant field
+                # This still works for model fields as the traversal will
+                # only happen once
+                fields = dc.key.split("__")
+
                 try:
-                    dc_field = type(obj)._meta.get_field(dc.key)
+                    # Set the initial target model
+                    target_model = type(obj)
+
+                    # For each field_name, traverse the field and target_models
+                    for field_name in fields:
+                        dc_field = target_model._meta.get_field(field_name)
+                        target_model = dc_field.related_model
                 except FieldDoesNotExist:
                     # Well this won't do. Poorly defined field. Since this'll be commonly used
                     # in templates though, we opt to squelch the error, rather than be noisy about
@@ -52,11 +63,27 @@ class ExtraFieldsJSONField(JSONField):
                 # To avoid letting users have multiple ways of doing the same thing, we reject
                 # conditions that have tried to supply the `_id` suffix themselves.
                 # (The earlier get_field call tolerates for both with and without.)
-                if dc.key != dc_field.name:
+                if fields[-1] != dc_field.name:
                     break
 
+                # First target the initial obj
+                target_obj = obj
+
+                # For each field provided, walk down the tree expect the last as
+                # is what the test will be performed on in the next step
+                for field_name in fields[:-1]:
+                    try:
+                        target_obj = getattr(obj, field_name)
+                    except AttributeError:
+                        # This is unlikely, but provided as insurance
+                        # in case the attribute doesn't resolve
+                        break
+
                 # Check to see whether the condition is satisfied.
-                if str(getattr(obj, f"{dc_field.name}_id")) not in dc.values.split(","):
+                if str(
+                    getattr(target_obj, f"{dc_field.name}_id")
+                ) not in dc.values.split(","):
+                    # Don't add the field if the id is not on the object
                     break
             else:
                 # We didn't trip any display condition failures; field is good to add.

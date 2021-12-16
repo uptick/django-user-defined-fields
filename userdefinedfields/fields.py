@@ -10,18 +10,16 @@ from .models import ExtraField
 
 class ExtraFieldsJSONField(JSONField):
     def __init__(self, *args, **kwargs):
-        kwargs['default'] = dict
-        kwargs['blank'] = True
+        kwargs["default"] = dict
+        kwargs["blank"] = True
         super().__init__(*args, **kwargs)
 
     def _get_EXTRAFIELD_fieldlist(self, obj, field):
         ct = ContentType.objects.get_for_model(obj)
 
         # grab the relevant extrafields for this content type
-        relevant_fields = (
-            ExtraField.objects
-            .filter(content_type=ct)
-            .prefetch_related('displaycondition_set')
+        relevant_fields = ExtraField.objects.filter(content_type=ct).prefetch_related(
+            "displaycondition_set"
         )
 
         # include only the fields that aren't rejected by their display conditions.
@@ -58,7 +56,7 @@ class ExtraFieldsJSONField(JSONField):
                     break
 
                 # Check to see whether the condition is satisfied.
-                if str(getattr(obj, f'{dc_field.name}_id')) not in dc.values.split(','):
+                if str(getattr(obj, f"{dc_field.name}_id")) not in dc.values.split(","):
                     break
             else:
                 # We didn't trip any display condition failures; field is good to add.
@@ -71,15 +69,18 @@ class ExtraFieldsJSONField(JSONField):
             val = data.get(f.name, None)
 
             # overwrite val with the pretty value if it's a choice field
-            if 'choices' in f.field_settings:
-                choices = {choice.get('value'): choice.get('label') for choice in f.field_settings['choices']}
+            if "choices" in f.field_settings:
+                choices = {
+                    choice.get("value"): choice.get("label")
+                    for choice in f.field_settings["choices"]
+                }
                 val = choices.get(val) or val
             fieldlist.append((f.group, f.name, f.label, val))
 
         return fieldlist
 
     def _get_EXTRAFIELD_display(self, obj, field):
-        """ Return a dictionary of extrafields relevant to this instance.
+        """Return a dictionary of extrafields relevant to this instance.
 
         This lets you do something like this in a template:
         {{ asset.get_extra_fields_display.field_name }}
@@ -88,6 +89,14 @@ class ExtraFieldsJSONField(JSONField):
         return {d[1]: d[3] for d in fieldlist}
 
     def contribute_to_class(self, cls, name, **kwargs):
-        setattr(cls, f'get_{name}_display', partialmethod(self._get_EXTRAFIELD_display, field=self))
-        setattr(cls, f'get_{name}_fieldlist', partialmethod(self._get_EXTRAFIELD_fieldlist, field=self))
+        setattr(
+            cls,
+            f"get_{name}_display",
+            partialmethod(self._get_EXTRAFIELD_display, field=self),
+        )
+        setattr(
+            cls,
+            f"get_{name}_fieldlist",
+            partialmethod(self._get_EXTRAFIELD_fieldlist, field=self),
+        )
         super().contribute_to_class(cls, name)

@@ -5,3 +5,5 @@ build/
 dist/
 django_user_defined_fields.egg-info
 example/database.db
+.idea/
+poetry.lock

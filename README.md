@@ -27,7 +27,7 @@ class Example(models.Model):
 ```
 
 ## Tests
-Run tests in example directory with `python manage.py test testapp`
+Run tests in example directory with `python manage.py test library`
 
 
 # Settings

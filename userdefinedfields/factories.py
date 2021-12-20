@@ -4,7 +4,6 @@ except ImportError:
     import sys
 
     sys.stderr.write("Use of factories requires factory_boy\n")
-    sys.stderr.write("run pip install factory_boy\n")
     exit(1)
 
 from django.utils.text import slugify

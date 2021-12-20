@@ -5,9 +5,9 @@ from .widgets import ExtraFieldsInput
 
 class ExtraFieldsField(JSONField):
     def __init__(self, model, *args, **kwargs):
-        kwargs['required'] = False
-        kwargs['initial'] = dict
-        kwargs['widget'] = ExtraFieldsInput(model=model)
+        kwargs["required"] = False
+        kwargs["initial"] = dict
+        kwargs["widget"] = ExtraFieldsInput(model=model)
         super().__init__(*args, **kwargs)
 
     # Using widget_attrs would be good but it gets evaluated too early during __init__ when

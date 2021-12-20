@@ -10,26 +10,34 @@ from .models import ExtraField
 
 class ExtraFieldsJSONField(JSONField):
     def __init__(self, *args, **kwargs):
-        kwargs['default'] = dict
-        kwargs['blank'] = True
+        kwargs["default"] = dict
+        kwargs["blank"] = True
         super().__init__(*args, **kwargs)
 
     def _get_EXTRAFIELD_fieldlist(self, obj, field):
         ct = ContentType.objects.get_for_model(obj)
 
         # grab the relevant extrafields for this content type
-        relevant_fields = (
-            ExtraField.objects
-            .filter(content_type=ct)
-            .prefetch_related('displaycondition_set')
+        relevant_fields = ExtraField.objects.filter(content_type=ct).prefetch_related(
+            "displaycondition_set"
         )
 
         # include only the fields that aren't rejected by their display conditions.
         filtered_fields = []
         for f in relevant_fields:
             for dc in f.displaycondition_set.all():
+                # Split the dc.key on '__' to create path to relevant field
+                # This still works for model fields as the traversal will
+                # only happen once
+                fields = dc.key.split("__")
+
+                # Set the initial target model
+                target_model = type(obj)
                 try:
-                    dc_field = type(obj)._meta.get_field(dc.key)
+                    # For each field_name, traverse the field and target_models
+                    for field_name in fields:
+                        dc_field = target_model._meta.get_field(field_name)
+                        target_model = dc_field.related_model
                 except FieldDoesNotExist:
                     # Well this won't do. Poorly defined field. Since this'll be commonly used
                     # in templates though, we opt to squelch the error, rather than be noisy about
@@ -54,11 +62,25 @@ class ExtraFieldsJSONField(JSONField):
                 # To avoid letting users have multiple ways of doing the same thing, we reject
                 # conditions that have tried to supply the `_id` suffix themselves.
                 # (The earlier get_field call tolerates for both with and without.)
-                if dc.key != dc_field.name:
+                if fields[-1] != dc_field.name:
                     break
 
+                # First target the initial obj
+                target_obj = obj
+
+                # For each field provided, walk down the tree expect the last as
+                # is what the test will be performed on in the next step
+                for field_name in fields[:-1]:
+                    try:
+                        target_obj = getattr(obj, field_name)
+                    except AttributeError:
+                        # This is unlikely, but provided as insurance
+                        # in case the attribute doesn't resolve
+                        break
+
                 # Check to see whether the condition is satisfied.
-                if str(getattr(obj, f'{dc_field.name}_id')) not in dc.values.split(','):
+                if str(getattr(target_obj, f"{dc_field.name}_id")) not in dc.values.split(","):
+                    # Don't add the field if the id is not on the object
                     break
             else:
                 # We didn't trip any display condition failures; field is good to add.
@@ -71,15 +93,18 @@ class ExtraFieldsJSONField(JSONField):
             val = data.get(f.name, None)
 
             # overwrite val with the pretty value if it's a choice field
-            if 'choices' in f.field_settings:
-                choices = {choice.get('value'): choice.get('label') for choice in f.field_settings['choices']}
+            if "choices" in f.field_settings:
+                choices = {
+                    choice.get("value"): choice.get("label")
+                    for choice in f.field_settings["choices"]
+                }
                 val = choices.get(val) or val
             fieldlist.append((f.group, f.name, f.label, val))
 
         return fieldlist
 
     def _get_EXTRAFIELD_display(self, obj, field):
-        """ Return a dictionary of extrafields relevant to this instance.
+        """Return a dictionary of extrafields relevant to this instance.
 
         This lets you do something like this in a template:
         {{ asset.get_extra_fields_display.field_name }}
@@ -88,6 +113,14 @@ class ExtraFieldsJSONField(JSONField):
         return {d[1]: d[3] for d in fieldlist}
 
     def contribute_to_class(self, cls, name, **kwargs):
-        setattr(cls, f'get_{name}_display', partialmethod(self._get_EXTRAFIELD_display, field=self))
-        setattr(cls, f'get_{name}_fieldlist', partialmethod(self._get_EXTRAFIELD_fieldlist, field=self))
+        setattr(
+            cls,
+            f"get_{name}_display",
+            partialmethod(self._get_EXTRAFIELD_display, field=self),
+        )
+        setattr(
+            cls,
+            f"get_{name}_fieldlist",
+            partialmethod(self._get_EXTRAFIELD_fieldlist, field=self),
+        )
         super().contribute_to_class(cls, name)

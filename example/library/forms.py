@@ -6,7 +6,7 @@ from .models import Book
 class BookForm(forms.ModelForm):
     class Meta:
         fields = [
-            'name',
-            'metadata',
+            "name",
+            "metadata",
         ]
         model = Book

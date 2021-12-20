@@ -1,0 +1,58 @@
+[tool.poetry]
+name = "django-user-defined-fields"
+version = "0.0.14"
+description = "A Django app for user defined fields"
+authors = ["Aidan Lister <aidan@uptickhq.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/uptick/django-user-defined-fields/"
+repository = "https://github.com/uptick/django-user-defined-fields/"
+keywords = ["django","custom","fields","json"]
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+include = [
+    "LICENSE",
+]
+packages = [
+    { include = "userdefinedfields"}
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4"
+Django = ">=2.2.24"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line_length = 100
+target-version = ['py39']
+include = '\.pyi?$'
+experimental_string_processing = true
+
+[tool.isort]
+known_django = "django"
+sections = ["FUTURE","STDLIB","THIRDPARTY","DJANGO","FIRSTPARTY","LOCALFOLDER"]
+default_section = "THIRDPARTY"
+known_standard_library = ["six","tablib","yaml"]
+known_first_party = "userdefinedfields"
+multi_line_output = 3
+line_length = 100
+indent = 4

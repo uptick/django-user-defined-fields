@@ -31,10 +31,9 @@ class ExtraFieldsJSONField(JSONField):
                 # only happen once
                 fields = dc.key.split("__")
 
+                # Set the initial target model
+                target_model = type(obj)
                 try:
-                    # Set the initial target model
-                    target_model = type(obj)
-
                     # For each field_name, traverse the field and target_models
                     for field_name in fields:
                         dc_field = target_model._meta.get_field(field_name)

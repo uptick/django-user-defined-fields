@@ -7,20 +7,30 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('library', '0002_auto_20211220_0003'),
+        ("library", "0002_auto_20211220_0003"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SectionType',
+            name="SectionType",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
             ],
         ),
         migrations.AddField(
-            model_name='section',
-            name='section_type',
-            field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.PROTECT, to='library.sectiontype'),
+            model_name="section",
+            name="section_type",
+            field=models.ForeignKey(
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="library.sectiontype",
+            ),
         ),
     ]

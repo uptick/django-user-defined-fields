@@ -46,15 +46,6 @@ line_length = 100
 target-version = ['py39']
 include = '\.pyi?$'
 experimental_string_processing = true
-force_exclude = '''
-(
-  /(
-    | migrations
-  )/
-  | models\.py
-  | urls\.py
-)
-'''
 
 [tool.isort]
 known_django = "django"

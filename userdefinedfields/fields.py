@@ -79,9 +79,7 @@ class ExtraFieldsJSONField(JSONField):
                         break
 
                 # Check to see whether the condition is satisfied.
-                if str(
-                    getattr(target_obj, f"{dc_field.name}_id")
-                ) not in dc.values.split(","):
+                if str(getattr(target_obj, f"{dc_field.name}_id")) not in dc.values.split(","):
                     # Don't add the field if the id is not on the object
                     break
             else:

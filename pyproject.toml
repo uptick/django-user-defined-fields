@@ -56,10 +56,6 @@ force_exclude = '''
 )
 '''
 
-[tool.flake8]
-ignore = "E501"
-max-line-length = 100
-
 [tool.isort]
 known_django = "django"
 sections = ["FUTURE","STDLIB","THIRDPARTY","DJANGO","FIRSTPARTY","LOCALFOLDER"]

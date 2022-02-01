@@ -1,6 +1,7 @@
 from functools import partialmethod
 
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import JSONField
 from django.db.models.fields.related import ForeignKey
@@ -14,13 +15,26 @@ class ExtraFieldsJSONField(JSONField):
         kwargs["blank"] = True
         super().__init__(*args, **kwargs)
 
-    def _get_EXTRAFIELD_fieldlist(self, obj, field):
-        ct = ContentType.objects.get_for_model(obj)
+    def _get_EXTRAFIELD_fieldlist(self, obj, field, use_cache=False):
 
         # grab the relevant extrafields for this content type
-        relevant_fields = ExtraField.objects.filter(content_type=ct).prefetch_related(
-            "displaycondition_set"
-        )
+        # Cache the results, if using the cache
+        if use_cache:
+            cache_key = f"django-extra-fields-{hash(type(obj))}"
+            relevant_fields = cache.get(cache_key)
+        else:
+            relevant_fields = None
+
+        if not relevant_fields:
+            ct = ContentType.objects.get_for_model(obj)
+            relevant_fields = (
+                ExtraField.objects.filter(content_type=ct)
+                .prefetch_related("displaycondition_set")
+                .all()
+            )
+
+        if use_cache:
+            cache.set(cache_key, relevant_fields, 30)
 
         # include only the fields that aren't rejected by their display conditions.
         filtered_fields = []

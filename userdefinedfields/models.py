@@ -8,6 +8,7 @@ class ExtraField(models.Model):
         ("integer", "Integer"),
         ("choice", "Choice"),
         ("date", "Date"),
+        ("decimal", "Decimal"),
     )
     content_type = models.ForeignKey("contenttypes.ContentType", on_delete=models.PROTECT)
     group = models.CharField("Field group", blank=True, max_length=32)

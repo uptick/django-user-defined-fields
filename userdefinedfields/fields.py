@@ -11,7 +11,7 @@ from .models import ExtraField
 
 class ExtraFieldsJSONField(JSONField):
     def __init__(self, *args, **kwargs):
-        kwargs["default"] = dict
+        kwargs["default"] = kwargs.get("default", dict)
         kwargs["blank"] = True
         super().__init__(*args, **kwargs)
 

@@ -11,18 +11,9 @@ from .models import ExtraField
 
 class ExtraFieldsJSONField(JSONField):
     def __init__(self, *args, **kwargs):
-        kwargs["default"] = self.get_default
+        kwargs["default"] = dict
         kwargs["blank"] = True
         super().__init__(*args, **kwargs)
-
-    def get_default(self):
-        ct = ContentType.objects.get_for_model(self.model)
-        relevant_fields = dict(
-            ExtraField.objects.filter(content_type=ct, default__isnull=False)
-            .exclude(default="")
-            .values_list("name", "default")
-        )
-        return relevant_fields
 
     def _get_EXTRAFIELD_fieldlist(self, obj, field, use_cache=False):
 

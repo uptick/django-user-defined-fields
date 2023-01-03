@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "django-user-defined-fields"
-version = "0.0.20"
+version = "0.0.21"
 description = "A Django app for user defined fields"
 authors = ["Aidan Lister <aidan@uptickhq.com>"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/uptick/django-user-defined-fields/"
 repository = "https://github.com/uptick/django-user-defined-fields/"
-keywords = ["django","custom","fields","json"]
+keywords = ["django", "custom", "fields", "json"]
 classifiers = [
     "Environment :: Web Environment",
     "Framework :: Django",
@@ -23,12 +23,8 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
 ]
-include = [
-    "LICENSE",
-]
-packages = [
-    { include = "userdefinedfields"}
-]
+include = ["LICENSE"]
+packages = [{ include = "userdefinedfields" }]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4"
@@ -49,9 +45,16 @@ experimental_string_processing = true
 
 [tool.isort]
 known_django = "django"
-sections = ["FUTURE","STDLIB","THIRDPARTY","DJANGO","FIRSTPARTY","LOCALFOLDER"]
+sections = [
+    "FUTURE",
+    "STDLIB",
+    "THIRDPARTY",
+    "DJANGO",
+    "FIRSTPARTY",
+    "LOCALFOLDER",
+]
 default_section = "THIRDPARTY"
-known_standard_library = ["six","tablib","yaml"]
+known_standard_library = ["six", "tablib", "yaml"]
 known_first_party = "userdefinedfields"
 multi_line_output = 3
 line_length = 100

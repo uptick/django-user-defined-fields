@@ -9,6 +9,13 @@ from django.db.models.fields.related import ForeignKey
 from .models import ExtraField
 
 
+class partialmethod_with_self(partialmethod):
+    """Backwards compatible fix for bug in python 3.11 https://github.com/python/cpython/issues/99152"""
+
+    def __get__(self, obj, cls=None):
+        return self._make_unbound_method().__get__(obj, cls)
+
+
 class ExtraFieldsJSONField(JSONField):
     def __init__(self, *args, **kwargs):
         kwargs["default"] = kwargs.get("default", dict)
@@ -130,11 +137,11 @@ class ExtraFieldsJSONField(JSONField):
         setattr(
             cls,
             f"get_{name}_display",
-            partialmethod(self._get_EXTRAFIELD_display, field=self),
+            partialmethod_with_self(self._get_EXTRAFIELD_display, field=self),
         )
         setattr(
             cls,
             f"get_{name}_fieldlist",
-            partialmethod(self._get_EXTRAFIELD_fieldlist, field=self),
+            partialmethod_with_self(self._get_EXTRAFIELD_fieldlist, field=self),
         )
         super().contribute_to_class(cls, name)

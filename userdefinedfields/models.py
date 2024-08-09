@@ -6,6 +6,7 @@ class ExtraField(models.Model):
         ("text", "Text"),
         ("multiline-text", "Multiline Text"),
         ("integer", "Integer"),
+        ("decimal", "Decimal"),
         ("choice", "Choice"),
         ("date", "Date"),
         ("decimal", "Decimal"),

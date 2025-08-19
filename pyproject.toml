@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-user-defined-fields"
-version = "0.0.22"
+version = "0.0.23"
 description = "A Django app for user defined fields"
 authors = ["Aidan Lister <aidan@uptickhq.com>"]
 license = "MIT"

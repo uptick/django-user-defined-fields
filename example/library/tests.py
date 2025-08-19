@@ -97,6 +97,45 @@ class CustomFieldTest(TestCase):
         fields = {x[1]: x for x in metadata}
         self.assertNotIn("has_dragons", fields)
 
+    def test_get_cached_fieldlist(self):
+        from .models import Book, Section
+
+        fantasy = Section(name="Fantasy")
+        fantasy.save()
+
+        field = ExtraField(
+            content_type=self.book_type,
+            label="Contains dragons",
+            name="has_dragons",
+            widget="bool",
+        )
+        field.save()
+        
+        field_2 = ExtraField(
+            content_type=self.book_type,
+            label="Contains wizards",
+            name="has_wizards",
+            widget="bool",
+        )
+        field_2.save()
+
+        book = Book(
+            name="Words of Radiance",
+            section=fantasy,
+            metadata={"author": "Brandon Sanderson", "has_dragons": False},
+        )
+        book.save()
+
+        with self.assertNumQueries(6):
+            book.get_metadata_fieldlist()
+            book.get_metadata_fieldlist()
+            book.get_metadata_fieldlist()
+        
+        with self.assertNumQueries(2):
+            book.get_cached_metadata_fieldlist()
+            book.get_cached_metadata_fieldlist()
+            book.get_cached_metadata_fieldlist()
+
     def test_relational_conditions(self):
         from .models import Book, Section, SectionType
 

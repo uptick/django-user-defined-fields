@@ -124,13 +124,13 @@ class ExtraFieldsJSONField(JSONField):
 
         return fieldlist
 
-    def _get_EXTRAFIELD_display(self, obj, field):
+    def _get_EXTRAFIELD_display(self, obj, field, use_cache=False):
         """Return a dictionary of extrafields relevant to this instance.
 
         This lets you do something like this in a template:
         {{ asset.get_extra_fields_display.field_name }}
         """
-        fieldlist = self._get_EXTRAFIELD_fieldlist(obj, field)
+        fieldlist = self._get_EXTRAFIELD_fieldlist(obj, field, use_cache)
         return {d[1]: d[3] for d in fieldlist}
 
     def contribute_to_class(self, cls, name, **kwargs):
@@ -143,5 +143,15 @@ class ExtraFieldsJSONField(JSONField):
             cls,
             f"get_{name}_fieldlist",
             partialmethod_with_self(self._get_EXTRAFIELD_fieldlist, field=self),
+        )
+        setattr(
+            cls,
+            f"get_cached_{name}_display",
+            partialmethod_with_self(self._get_EXTRAFIELD_display, field=self, use_cache=True),
+        )
+        setattr(
+            cls,
+            f"get_cached_{name}_fieldlist",
+            partialmethod_with_self(self._get_EXTRAFIELD_fieldlist, field=self, use_cache=True),
         )
         super().contribute_to_class(cls, name)
